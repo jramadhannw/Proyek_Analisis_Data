@@ -1,19 +1,3 @@
-# Proyek Analisis Data Dashboard
-
-## Setup Environment - Anaconda
-### 1. Create a new environment
-```
-conda create --name main-ds python=3.12
-```
-### 2. Activate the environment
-```
-conda activate main-ds
-```
-### 3. Install the required packages
-```
-pip install -r requirements.txt
-```
-
 ## Setup Environment - Shell/Terminal
 ### 1. Create a new directory for the project
 ```
