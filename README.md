@@ -1,11 +1,11 @@
 ## Setup Environment - Shell/Terminal
 ### 1. Create a new directory for the project
 ```
-mkdir "Proyek Analisis Data"
+mkdir "Proyek_Analisis_Data"
 ```
 ### 2. Change into the project directory
 ```
-cd "Proyek Analisis Data"
+cd "Proyek_Analisis_Data"
 ```
 ### 3. Install Pipenv (if not installed)
 ```
