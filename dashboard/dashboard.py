@@ -3,30 +3,37 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# Load the dataset
 data = pd.read_csv('dashboard/day.csv')
 
-st.title("Bike Sharing Data Analysis")
+# Set the title for the Streamlit app
+st.title("Analysis of Bike Sharing Data")
 
-st.write("### Dataset Overview")
+# Display an overview of the dataset
+st.write("### Overview of the Dataset")
 st.write(data.head())
 
-weatherRental = data.groupby('weathersit')['cnt'].sum().reset_index()
+# Group the data by weather conditions and calculate total rentals
+weather_rentals = data.groupby('weathersit')['cnt'].sum().reset_index()
 
-st.write("### Bike Rentals by Weather Condition")
+# Show bike rentals categorized by weather conditions
+st.write("### Total Bike Rentals by Weather Condition")
 fig, ax = plt.subplots()
-sns.barplot(x='weathersit', y='cnt', data=weatherRental, ax=ax)
+sns.barplot(x='weathersit', y='cnt', data=weather_rentals, ax=ax)
 ax.set_xlabel('Weather Condition')
 ax.set_ylabel('Total Rentals')
-ax.set_title('Bike Rentals by Weather')
+ax.set_title('Bike Rentals by Weather Conditions')
 ax.set_xticks([0, 1, 2, 3])  
 ax.set_xticklabels(['Clear', 'Mist', 'Light Rain', 'Heavy Rain'])
 st.pyplot(fig)
 
-seasonRental = data.groupby('season')['cnt'].sum().reset_index()
+# Group the data by season and compute total rentals
+season_rentals = data.groupby('season')['cnt'].sum().reset_index()
 
-st.write("### Bike Rentals by Season")
+# Display bike rentals by season
+st.write("### Total Bike Rentals by Season")
 fig, ax = plt.subplots()
-sns.barplot(x='season', y='cnt', data=seasonRental, ax=ax)
+sns.barplot(x='season', y='cnt', data=season_rentals, ax=ax)
 ax.set_xlabel('Season')
 ax.set_ylabel('Total Rentals')
 ax.set_title('Bike Rentals by Season')
@@ -34,13 +41,14 @@ ax.set_xticks([0, 1, 2, 3])
 ax.set_xticklabels(['Spring', 'Summer', 'Fall', 'Winter'])
 st.pyplot(fig)
 
-st.write("### Correlation Matrix of Key Features")
+# Show the correlation matrix for key features
+st.write("### Correlation Matrix of Important Features")
 
 plt.figure(figsize=(12, 8))
-correlation = data[['temp', 'atemp', 'hum', 'windspeed', 'cnt']].corr()
+correlation_matrix = data[['temp', 'atemp', 'hum', 'windspeed', 'cnt']].corr()
 
-# Create the heatmap
+# Create and display the heatmap for the correlation matrix
 fig, ax = plt.subplots()
-sns.heatmap(correlation, annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
 ax.set_title('Correlation Matrix')
 st.pyplot(fig)
