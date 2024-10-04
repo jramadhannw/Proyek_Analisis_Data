@@ -7,7 +7,7 @@ mkdir "Proyek_Analisis_Data"
 ```
 cd "Proyek_Analisis_Data"
 ```
-### 3. Install Pipenv (if not installed)
+### 3. Install Pipenv
 ```
 pip install pipenv
 ```
