@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 # Set the title of the dashboard
 st.title("Bike Sharing Data Analysis")
 
-# Load the dataset
-@st.cache
+# Load the dataset with caching
+@st.cache_data
 def load_data():
-    data = pd.read_csv('dashboard/data.csv')
+    day_data = 'https://raw.githubusercontent.com/jramadhannw/Bike_Sharing_Dataset/main/day.csv'
     df_day = pd.read_csv(day_data)
     return df_day
 
@@ -23,7 +23,12 @@ st.write(df_day.describe())
 # Group data by weather
 st.header("Group Data by Weather")
 weather_group = df_day.groupby('weathersit').agg({'cnt': 'sum'}).reset_index()
-weather_labels = {1: 'Clear, Few clouds', 2: 'Mist + Cloudy', 3: 'Light Snow, Light Rain', 4: 'Heavy Rain, Ice Pallets'}
+weather_labels = {
+    1: 'Clear, Few clouds',
+    2: 'Mist + Cloudy',
+    3: 'Light Snow, Light Rain',
+    4: 'Heavy Rain, Ice Pallets'
+}
 weather_group['weathersit'] = weather_group['weathersit'].map(weather_labels)
 st.write(weather_group)
 
@@ -44,7 +49,7 @@ st.write(correlation_matrix)
 # Create the heatmap
 st.header("Heatmap of Correlation Matrix")
 plt.figure(figsize=(10, 5))
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=.5)
 plt.title('Heatmap of Correlation Matrix')
 st.pyplot(plt)
 
@@ -58,10 +63,7 @@ st.write(filtered_data)
 
 # Visualization of filtered data
 st.header("Visualization of Filtered Data")
-plt.figure(figsize=(10, 5))
-sns.lineplot(data=filtered_data, x='dteday', y='cnt', marker='o')
-plt.title('Rentals Over Time for Selected Season and Weather')
-plt.xlabel('Date')
-plt.ylabel('Total Rentals')
-plt.xticks(rotation=45)
-st.pyplot(plt)
+if not filtered_data.empty:
+    plt.figure(figsize=(10, 5))
+    sns.lineplot(data=filtered_data, x='dteday', y='cnt', marker='o')
+    plt.title('Rentals Over 
