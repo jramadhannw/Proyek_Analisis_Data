@@ -44,28 +44,12 @@ st.pyplot(fig)
 # Correlation Matrix feature
 st.write("### Correlation Matrix of Key Features")
 
+# Generate the correlation matrix
+plt.figure(figsize=(12, 8))
+correlation = data[['temp', 'atemp', 'hum', 'windspeed', 'cnt']].corr()
 
-correlation_matrix = df_day[['cnt', 'temp', 'hum', 'windspeed', 'weathersit']].corr()
-
-plt.figure(figsize=(10, 5))
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
-plt.title('Heatmap Korelasi antara Variabel')
-plt.show()
-     
-
-# Filter data by weather and season
-st.sidebar.header("Filter Options")
-selectedWeather = st.sidebar.multiselect('Select Weather Condition', data['weathersit'].unique())
-selectedSeason = st.sidebar.multiselect('Select Season', data['season'].unique())
-
-filteredData = data.copy()
-
-if selectedWeather:
-    filteredData = filteredData[filteredData['weathersit'].isin(selectedWeather)]
-
-if selectedSeason:
-    filteredData = filteredData[filteredData['season'].isin(selectedSeason)]
-
-# Display filtered data
-st.write("### Filtered Data")
-st.write(filteredData.head())
+# Create the heatmap
+fig, ax = plt.subplots()
+sns.heatmap(correlation, annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
+ax.set_title('Correlation Matrix')
+st.pyplot(fig)
