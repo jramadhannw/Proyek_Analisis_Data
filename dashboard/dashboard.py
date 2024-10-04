@@ -1,74 +1,72 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+data = pd.read_csv('dashboard/day.csv')
 
 # Set the title of the dashboard
 st.title("Bike Sharing Data Analysis")
 
-# Load the dataset without caching
-def load_data():
-    # Ensure the correct path is used to load the CSV file
-    return pd.read_csv('dashboard/day.csv')
-
-df_day = load_data()
-
 # Display dataset information
-st.header("Dataset Information")
-st.write(df_day.head())
-st.write(df_day.describe())
+st.write("### Dataset Overview")
+st.write(data.head())
 
-# Group data by weather
-st.header("Group Data by Weather")
-weather_group = df_day.groupby('weathersit')['cnt'].sum().reset_index()
-weather_labels = {
-    1: 'Clear, Few clouds',
-    2: 'Mist + Cloudy',
-    3: 'Light Snow, Light Rain',
-    4: 'Heavy Rain, Ice Pellets'
-}
-weather_group['weathersit'] = weather_group['weathersit'].map(weather_labels)
-st.write(weather_group)
+# Group data by weather and aggregate rental count
+weatherRental = data.groupby('weathersit')['cnt'].sum().reset_index()
 
 # Visualization for rentals by weather
-st.header("Rentals by Weather")
-plt.figure(figsize=(10, 5))
-sns.barplot(data=weather_group, x='weathersit', y='cnt', palette='viridis')
-plt.title('Total Rentals by Weather')
-plt.xlabel('Weather')
-plt.ylabel('Total Rentals')
-st.pyplot(plt)
+st.write("### Bike Rentals by Weather Condition")
+fig, ax = plt.subplots()
+sns.barplot(x='weathersit', y='cnt', data=weatherRental, ax=ax)
+ax.set_xlabel('Weather Condition')
+ax.set_ylabel('Total Rentals')
+ax.set_title('Bike Rentals by Weather')
+ax.set_xticks([0, 1, 2, 3])  
+ax.set_xticklabels(['Clear', 'Mist', 'Light Rain', 'Heavy Rain'])
+st.pyplot(fig)
 
-# Correlation matrix feature
-st.header("Correlation Matrix")
-correlation_matrix = df_day.corr()
-st.write(correlation_matrix)
+# Group data by season and aggregate rental count
+seasonRental = data.groupby('season')['cnt'].sum().reset_index()
+
+# Visualization for rentals by season
+st.write("### Bike Rentals by Season")
+fig, ax = plt.subplots()
+sns.barplot(x='season', y='cnt', data=seasonRental, ax=ax)
+ax.set_xlabel('Season')
+ax.set_ylabel('Total Rentals')
+ax.set_title('Bike Rentals by Season')
+ax.set_xticks([0, 1, 2, 3])  
+ax.set_xticklabels(['Spring', 'Summer', 'Fall', 'Winter'])
+st.pyplot(fig)
+
+# Correlation Matrix feature
+st.write("### Correlation Matrix of Key Features")
+
+# Generate the correlation matrix
+plt.figure(figsize=(12, 8))
+correlation = data[['temp', 'atemp', 'hum', 'windspeed', 'cnt']].corr()
 
 # Create the heatmap
-st.header("Heatmap of Correlation Matrix")
-plt.figure(figsize=(10, 5))
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", linewidths=.5)
-plt.title('Heatmap of Correlation Matrix')
-st.pyplot(plt)
+fig, ax = plt.subplots()
+sns.heatmap(correlation, annot=True, cmap='coolwarm', fmt=".2f", ax=ax)
+ax.set_title('Correlation Matrix')
+st.pyplot(fig)
 
-# Filter the data by season and weather
-st.header("Filter Data by Season and Weather")
-season = st.selectbox("Select Season", options=[1, 2, 3, 4], 
-                       format_func=lambda x: {1: 'Winter', 2: 'Spring', 3: 'Summer', 4: 'Fall'}[x])
-weather = st.selectbox("Select Weather", options=[1, 2, 3, 4], 
-                        format_func=lambda x: weather_labels[x])
+# Filter data by weather and season
+st.sidebar.header("Filter Options")
+selectedWeather = st.sidebar.multiselect('Select Weather Condition', data['weathersit'].unique())
+selectedSeason = st.sidebar.multiselect('Select Season', data['season'].unique())
 
-filtered_data = df_day[(df_day['season'] == season) & (df_day['weathersit'] == weather)]
-st.write(filtered_data)
+filteredData = data.copy()
 
-# Visualization of filtered data
-st.header("Visualization of Filtered Data")
-if not filtered_data.empty:
-    plt.figure(figsize=(10, 5))
-    sns.lineplot(data=filtered_data, x='dteday', y='cnt', marker='o')
-    plt.xlabel('Date')
-    plt.ylabel('Total Rentals')
-    plt.xticks(rotation=45)
-    st.pyplot(plt)
-else:
-    st.write("No data available for the selected season and weather.")
+if selectedWeather:
+    filteredData = filteredData[filteredData['weathersit'].isin(selectedWeather)]
+
+if selectedSeason:
+    filteredData = filteredData[filteredData['season'].isin(selectedSeason)]
+
+# Display filtered data
+st.write("### Filtered Data")
+st.write(filteredData.head())
