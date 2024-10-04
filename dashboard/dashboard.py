@@ -9,7 +9,7 @@ st.title("Bike Sharing Data Analysis")
 # Load the dataset
 @st.cache
 def load_data():
-    day_data = 'https://raw.githubusercontent.com/jramadhannw/Bike_Sharing_Dataset/main/day.csv'
+    data = pd.read_csv('dashboard/data.csv')
     df_day = pd.read_csv(day_data)
     return df_day
 
