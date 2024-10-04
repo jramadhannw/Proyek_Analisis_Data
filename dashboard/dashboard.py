@@ -22,10 +22,8 @@ ax.set_xticks([0, 1, 2, 3])
 ax.set_xticklabels(['Clear', 'Mist', 'Light Rain', 'Heavy Rain'])
 st.pyplot(fig)
 
-# Group the data by season and compute total rentals
 season_rentals = data.groupby('season')['cnt'].sum().reset_index()
 
-# Display bike rentals by season
 st.write("### Total Bike Rentals by Season")
 fig, ax = plt.subplots()
 sns.barplot(x='season', y='cnt', data=season_rentals, ax=ax)
