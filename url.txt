@@ -1,1 +1,1 @@
-https://bikedatajelang.streamlit.app/
+https://bikeanalysisdatajelang.streamlit.app/
